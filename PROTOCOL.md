@@ -2,7 +2,7 @@
 > ## PLEASE note that this shouldn't be used for any malicious purposes and that is not the intent of this protocol! Anything related to that is not related to this repo!
 
 ### GET `/getAttackSurface`
-Takes in a single URL parameter, `numResults`, which should be a single integer greater then zero. Based on that, the server should return an array of objects which look like the following:
+Takes in a single URL parameter, `numResults`, which should be a single integer greater then zero. If `numResults` is invalid the server should default to 8. Based on that, the server should return an array of objects which look like the following:
 ```json
 {
   "surfaceId": "d11bcf59-a882-4b90-8d70-533646d0a578", "_comment0": "this should be a uuid v4 unique to each attack surface",
@@ -17,7 +17,16 @@ Takes in a single URL parameter, `numResults`, which should be a single integer 
 ```
 
 ### POST `/newAttackSurface`
-The POST data should closely mirror the data sent above under `/getAttackSurface`, except without the `surfaceId`. The response from the server should look like:
+The POST data should closely mirror the data sent above under `/getAttackSurface`, except without the `surfaceId` and the array should be embedded in a object which follows the format:
+```json
+{
+  "adminKey": "d35dbc51-690b-430c-9570-824fba5e868a", "_comment0": "this should be a uuid v4 generated uniquely for each server and serves as authentication. if authentication fails the server should respond with a object with 'ok' set to false and no 'data' key.",
+  "data": [
+    "(insert data objects)"
+  ]
+}
+```
+The response from the server should look like:
 ```json
 {
   "ok": true,
@@ -28,4 +37,4 @@ The POST data should closely mirror the data sent above under `/getAttackSurface
 ```
 
 ### PUT `/updateAttackSurface`
-Identical to `/newAttackSurface` except with surfaceIds in the sent data.
+Identical to `/newAttackSurface` except with surfaceIds in the sent data. Authentication should proceed identically.
